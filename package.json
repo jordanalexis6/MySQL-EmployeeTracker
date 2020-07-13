@@ -8,5 +8,19 @@
     "inquirer": "^6.2.1",
     "inquirer-list-input": "^0.1.2",
     "mysql": "^2.16.0"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kholder777/MySQL-EmployeeTracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kholder777/MySQL-EmployeeTracker/issues"
+  },
+  "homepage": "https://github.com/kholder777/MySQL-EmployeeTracker#readme"
 }
