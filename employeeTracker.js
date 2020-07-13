@@ -1,6 +1,27 @@
-var mysql = require("mysql");
 var inquirer = require("inquirer");
+var mysql = require("mysql");
 const cTable = require("console.table");
+// create the connection information for the sql database
+var connection = mysql.createConnection({
+	host: "localhost",
+
+	// Your port; if not 3306
+	port: 3306,
+
+	// Your username
+	user: "root",
+
+	// Your password
+	password: "password",
+	database: "employee_DB",
+});
+
+// connect to the mysql server and sql database
+connection.connect(function (err) {
+	if (err) throw err;
+	// run the start function after the connection is made to prompt the user
+});
+
 const questions = [
 	{
 		type: "list",
@@ -157,7 +178,7 @@ function init() {
 			console.log(response3);
 			switch (response3.viewChoice) {
 				case "employee":
-					con.query("SELECT * FROM employee limit 50", (err, rows) => {
+					connection.query("SELECT * FROM employee limit 50", (err, rows) => {
 						if (err) throw err;
 
 						console.log("Data received from Db:");
@@ -165,7 +186,7 @@ function init() {
 					});
 					break;
 				case "role":
-					con.query("SELECT * FROM role limit 50", (err, rows) => {
+					connection.query("SELECT * FROM role limit 50", (err, rows) => {
 						if (err) throw err;
 
 						console.log("Data received from Db:");
@@ -173,7 +194,7 @@ function init() {
 					});
 					break;
 				case "department":
-					con.query("SELECT * FROM department limit 50", (err, rows) => {
+					connection.query("SELECT * FROM department limit 50", (err, rows) => {
 						if (err) throw err;
 
 						console.log("Data received from Db:");
@@ -195,7 +216,7 @@ function init() {
 			console.log(response4);
 			switch (response4.updateChoice) {
 				case "employee":
-					con.query(
+					connection.query(
 						"UPDATE employee SET first_name = ?, last_name = ? Where id = ?",
 						["Leipzig", 3],
 						(err, result) => {
@@ -206,7 +227,7 @@ function init() {
 					);
 					break;
 				case "role":
-					con.query(
+					connection.query(
 						"UPDATE role SET title = ?, salary = ? Where id = ?",
 						["Leipzig", 3],
 						(err, result) => {
@@ -217,7 +238,7 @@ function init() {
 					);
 					break;
 				case "department":
-					con.query(
+					connection.query(
 						"UPDATE department SET name = ? Where id = ?",
 						["Leipzig", 3],
 						(err, result) => {
