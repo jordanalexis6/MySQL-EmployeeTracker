@@ -157,7 +157,7 @@ function init() {
     console.log(response);
     inquirer.prompt(viewQuestions).then((response3) => {
       console.log(response3);
-      switch (response2.viewChoice) {
+      switch (response3.viewChoice) {
         case "employee":
           con.query("SELECT * FROM employee limit 50", (err, rows) => {
             if (err) throw err;
@@ -195,7 +195,7 @@ function init() {
     console.log(response);
     inquirer.prompt(updateQuestions).then((response4) => {
       console.log(response4);
-      switch (response2.updateChoice) {
+      switch (response4.updateChoice) {
         case "employee":
           con.query(
             "UPDATE employee SET first_name = ?, last_name = ? Where id = ?",
