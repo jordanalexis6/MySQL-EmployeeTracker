@@ -155,9 +155,9 @@ function department() {
 function init() {
   inquirer.prompt(questions).then((response) => {
     console.log(response);
-    inquirer.prompt(viewQuestions).then((response2) => {
-      console.log(response2);
-      switch (response2.viewQuestions) {
+    inquirer.prompt(viewQuestions).then((response3) => {
+      console.log(response3);
+      switch (response3.viewChoice) {
         case "employee":
           con.query("SELECT * FROM employee limit 50", (err, rows) => {
             if (err) throw err;
@@ -193,9 +193,9 @@ init();
 function init() {
   inquirer.prompt(questions).then((response) => {
     console.log(response);
-    inquirer.prompt(updateQuestions).then((response2) => {
-      console.log(response2);
-      switch (response2.updateQuestions) {
+    inquirer.prompt(updateQuestions).then((response4) => {
+      console.log(response4);
+      switch (response4.updateChoice) {
         case "employee":
           con.query(
             "UPDATE employee SET first_name = ?, last_name = ? Where id = ?",
