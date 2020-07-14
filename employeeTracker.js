@@ -1,6 +1,8 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
 const cTable = require("console.table");
+// var PORT = process.env.PORT || 4020;
+
 // create the connection information for the sql database
 var connection = mysql.createConnection({
 	host: "localhost",
@@ -237,8 +239,8 @@ function init() {
 				case "employee":
 					connection.query(
 						//----------------this is where the current problem is happening: Where id = ?    -------------------------
-						"UPDATE employee SET first_name = ?, last_name = ? Where id = ?",
-						["Leipzig", 3],
+						"UPDATE employee SET first_name = ?, last_name = ? where id = ?",
+						["Lil", "Leipzig", 3],
 						(err, result) => {
 							if (err) throw err;
 
@@ -248,8 +250,8 @@ function init() {
 					break;
 				case "role":
 					connection.query(
-						"UPDATE role SET title = ?, salary = ? Where id = ?",
-						["Leipzig", 3],
+						"UPDATE role SET title = ?, salary = ? where id = ?",
+						["Bobby", "Leipzig", 3],
 						(err, result) => {
 							if (err) throw err;
 
