@@ -1,6 +1,8 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
 const cTable = require("console.table");
+// var PORT = process.env.PORT || 4020;
+
 // create the connection information for the sql database
 var connection = mysql.createConnection({
 	host: "localhost",
@@ -35,7 +37,7 @@ const addQuestions = [
 		type: "list",
 		name: "addChoice",
 		message: "What would you like to do?",
-		choices: ["employee", "role", "department"],
+		choices: ["employee", "role", "department", "Add All"],
 	},
 ];
 const viewQuestions = [
@@ -100,6 +102,7 @@ const departmentQuestions = [
 		message: "What is your department name?",
 	},
 ];
+//not MVP.
 const allQuestions = [employeeQuestions, roleQuestions, departmentQuestions];
 // if response is addChoice run through function to add based on what they choose
 function init() {
@@ -116,6 +119,9 @@ function init() {
 					break;
 				case "department":
 					department();
+					break;
+				case "Add All":
+					addAll();
 					break;
 				default:
 				// code block
@@ -162,6 +168,21 @@ function department() {
 			"INSERT INTO department SET ?",
 			{
 				name: answer.department,
+			},
+			function (err) {
+				if (err) throw err;
+				// console.table();
+			}
+		);
+	});
+}
+function addAll() {
+	inquirer.prompt(allQuestions).then(function (answer) {
+		// when finished prompting, insert a new item into the db with that info
+		connection.query(
+			"INSERT INTO employee SET ?",
+			{
+				name: answer.employee,
 			},
 			function (err) {
 				if (err) throw err;
@@ -217,8 +238,9 @@ function init() {
 			switch (response4.updateChoice) {
 				case "employee":
 					connection.query(
-						"UPDATE employee SET first_name = ?, last_name = ? Where id = ?",
-						["Leipzig", 3],
+						//----------------this is where the current problem is happening: Where id = ?    -------------------------
+						"UPDATE employee SET first_name = ?, last_name = ? where id = ?",
+						["Lil", "Leipzig", 3],
 						(err, result) => {
 							if (err) throw err;
 
@@ -228,8 +250,8 @@ function init() {
 					break;
 				case "role":
 					connection.query(
-						"UPDATE role SET title = ?, salary = ? Where id = ?",
-						["Leipzig", 3],
+						"UPDATE role SET title = ?, salary = ? where id = ?",
+						["Bobby", "Leipzig", 3],
 						(err, result) => {
 							if (err) throw err;
 
