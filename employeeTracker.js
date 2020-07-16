@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
 	host: "localhost",
 
 	// Your port; if not 3306
-	PORT: process.env.PORT || 4020,
+	PORT: process.env.PORT || 3306,
 
 	// Your username
 	user: "root",
@@ -26,35 +26,20 @@ connection.connect(function (err) {
 const questions = [
 	{
 		type: "list",
-		name: "firstChoice",
+		name: "actionChoice",
 		message: "What would you like to do?",
 		choices: ["ADD", "VIEW", "UPDATE"],
 	},
 ];
-const addQuestions = [
+const questions2 = [
 	{
 		type: "list",
-		name: "addChoice",
+		name: "targetChoice",
 		message: "What would you like to do?",
-		choices: ["employee", "role", "department", "Add All"],
-	},
-];
-const viewQuestions = [
-	{
-		type: "list",
-		name: "viewChoice",
-		message: "What would you like to view?",
 		choices: ["employee", "role", "department"],
 	},
 ];
-const updateQuestions = [
-	{
-		type: "list",
-		name: "updateChoice",
-		message: "What role would you like to update?",
-		choices: ["employee", "role", "department"],
-	},
-];
+
 const employeeQuestions = [
 	{
 		name: "first_name",
@@ -102,32 +87,42 @@ const departmentQuestions = [
 	},
 ];
 //not MVP.
-const allQuestions = [employeeQuestions, roleQuestions, departmentQuestions];
+// const allQuestions = [employeeQuestions, roleQuestions, departmentQuestions];
 
 // if response is addChoice run through function to add based on what they choose
 function init() {
 	inquirer.prompt(questions).then((response) => {
-		console.log(response);
-		inquirer.prompt(addQuestions).then((response2) => {
-			console.log(response2);
-			switch (response2.addChoice) {
-				case "employee":
-					employee();
-					break;
-				case "role":
-					role();
-					break;
-				case "department":
-					department();
-					break;
-				case "Add All":
-					addAll();
-					break;
-					connection.end();
-				default:
-				// code block
-			}
-		});
+		if (response.actionChoice === "UPDATE") {
+			role();
+		} else {
+			inquirer.prompt(questions2).then((response2) => {
+				switch (response.actionChoice) {
+					case "ADD":
+						if (response2.targetChoice === "employee") {
+							employee();
+						}
+						if (response2.targetChoice === "role") {
+							role();
+						}
+						if (response2.targetChoice === "department") {
+							department();
+						}
+						break;
+					case "VIEW":
+						if (response2.targetChoice === "employee") {
+							employee();
+						}
+						if (response2.targetChoice === "role") {
+							role();
+						}
+						if (response2.targetChoice === "department") {
+							department();
+						}
+						break;
+					// code block
+				}
+			});
+		}
 	});
 }
 // addChoice functions questions based on what they want to add
@@ -138,7 +133,7 @@ function employee() {
 		connection.query(
 			"INSERT INTO employee SET ?",
 			{
-				name: response2.employee,
+				first_name: response2.employee,
 			},
 			function (err) {
 				if (err) throw err;
@@ -178,23 +173,9 @@ function department() {
 		);
 	});
 }
-function addAll() {
-	inquirer.prompt(allQuestions).then(function (answer) {
-		// when finished prompting, insert a new item into the db with that info
-		connection.query(
-			"INSERT INTO employee SET ?",
-			{
-				name: answer.employee,
-			},
-			function (err) {
-				if (err) throw err;
-				// console.table();
-			}
-		);
-	});
-}
+
 // if response is viewChoice
-function init() {
+function view() {
 	inquirer.prompt(questions).then((response) => {
 		console.log(response);
 		inquirer.prompt(viewQuestions).then((response3) => {
@@ -224,7 +205,7 @@ function init() {
 						console.log(rows);
 					});
 					break;
-					connection.end();
+
 				default:
 				// code block
 			}
@@ -233,7 +214,7 @@ function init() {
 }
 // init();
 // if response is updateChoice
-function init() {
+function update() {
 	inquirer.prompt(questions).then((response) => {
 		console.log(response);
 		inquirer.prompt(updateQuestions).then((response4) => {
@@ -279,10 +260,10 @@ function init() {
 		});
 	});
 }
-res.send(result.toString());
+// res.send(result.toString());
 
 // Start our server so that it can begin listening to client requests.
-app.listen(PORT, function () {
-	// Log (server-side) when our server has started
-	console.log("Server listening on: http://localhost:" + PORT);
-});
+// app.listen(PORT, function () {
+// 	// Log (server-side) when our server has started
+// 	console.log("Server listening on: http://localhost:" + PORT);
+// });
