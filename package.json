@@ -1,26 +1,28 @@
 {
-  "name": "employee-tracker",
-  "version": "1.0.0",
-  "description": "activity for demonstrating inquirer with mysql",
-  "main": "employeeTracker.js",
-  "dependencies": {
-    "console.table": "^0.10.0",
-    "inquirer": "^6.2.1",
-    "inquirer-list-input": "^0.1.2",
-    "mysql": "^2.16.0"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kholder777/MySQL-EmployeeTracker.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/kholder777/MySQL-EmployeeTracker/issues"
-  },
-  "homepage": "https://github.com/kholder777/MySQL-EmployeeTracker#readme"
+	"name": "employee-tracker",
+	"version": "1.0.0",
+	"description": "activity for demonstrating inquirer with mysql",
+	"main": "employeeTracker.js",
+	"dependencies": {
+		"console.table": "^0.10.0",
+		"inquirer": "^6.5.2",
+		"inquirer-list-input": "^0.1.2",
+		"mysql": "^2.16.0"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node employeeTracker.js",
+		"watch": "nodemon employeeTracker.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kholder777/MySQL-EmployeeTracker.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/kholder777/MySQL-EmployeeTracker/issues"
+	},
+	"homepage": "https://github.com/kholder777/MySQL-EmployeeTracker#readme"
 }
