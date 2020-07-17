@@ -35,7 +35,7 @@ const questions2 = [
 	{
 		type: "list",
 		name: "targetChoice",
-		message: "What would you like to do?",
+		message: "What would you like to target?",
 		choices: ["employee", "role", "department"],
 	},
 ];
@@ -127,13 +127,18 @@ function init() {
 }
 // addChoice functions questions based on what they want to add
 function employee() {
-	inquirer.prompt(employeeQuestions).then(function (response2) {
+	//check if dept exists
+	//check if role exists
+	inquirer.prompt(employeeQuestions).then(function (answers) {
 		// when finished prompting, insert a new item into the db with that info
-
+		console.log(answers);
 		connection.query(
 			"INSERT INTO employee SET ?",
 			{
-				first_name: response2.employee,
+				first_name: answers.first_name,
+				last_name: answers.last_name,
+				role_id: answers.role_id,
+				manager_id: answers.manager_id,
 			},
 			function (err) {
 				if (err) throw err;
@@ -143,13 +148,15 @@ function employee() {
 	});
 }
 function role() {
-	inquirer.prompt(roleQuestions).then(function (answer) {
+	inquirer.prompt(roleQuestions).then(function (answers) {
 		// when finished prompting, insert a new item into the db with that info
 
 		connection.query(
 			"INSERT INTO role SET ?",
 			{
-				name: answer.role,
+				title: answers.title,
+				salary: answers.salary,
+				department_name: answers.department_name,
 			},
 			function (err) {
 				if (err) throw err;
@@ -159,12 +166,12 @@ function role() {
 	});
 }
 function department() {
-	inquirer.prompt(departmentQuestions).then(function (answer) {
+	inquirer.prompt(departmentQuestions).then(function (answers) {
 		// when finished prompting, insert a new item into the db with that info
 		connection.query(
 			"INSERT INTO department SET ?",
 			{
-				name: answer.department,
+				name: answers.name,
 			},
 			function (err) {
 				if (err) throw err;
