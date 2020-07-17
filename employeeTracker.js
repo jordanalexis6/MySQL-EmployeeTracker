@@ -93,6 +93,8 @@ const departmentQuestions = [
 function init() {
 	inquirer.prompt(questions).then((response) => {
 		if (response.actionChoice === "UPDATE") {
+			//display current employee table
+			console.table(response2.results);
 			role();
 		} else {
 			inquirer.prompt(questions2).then((response2) => {
@@ -110,14 +112,18 @@ function init() {
 						break;
 					case "VIEW":
 						if (response2.targetChoice === "employee") {
-							employee();
+							// employee();
+							view(response2.targetChoice);
 						}
 						if (response2.targetChoice === "role") {
-							role();
+							view(response2.targetChoice);
 						}
 						if (response2.targetChoice === "department") {
-							department();
+							view(response2.targetChoice);
 						}
+						break;
+					case "EXIT":
+						connection.end();
 						break;
 					// code block
 				}
@@ -182,42 +188,40 @@ function department() {
 }
 
 // if response is viewChoice
-function view() {
-	inquirer.prompt(questions).then((response) => {
-		console.log(response);
-		inquirer.prompt(viewQuestions).then((response3) => {
-			console.log(response3);
-			switch (response3.viewChoice) {
-				case "employee":
-					connection.query("SELECT * FROM employee limit 50", (err, rows) => {
-						if (err) throw err;
+function view(response2) {
+	// console.log(response);
+	// inquirer.prompt(viewQuestions).then((response3) => {
+	// console.log(response3);
+	switch (response2) {
+		case "employee":
+			connection.query("SELECT * FROM employee limit 50", (err, results) => {
+				if (err) throw err;
 
-						console.log("Data received from Db:");
-						console.log(rows);
-					});
-					break;
-				case "role":
-					connection.query("SELECT * FROM role limit 50", (err, rows) => {
-						if (err) throw err;
+				console.log("Data received from Db:");
+				console.table(results);
+			});
+			break;
+		case "role":
+			connection.query("SELECT * FROM role limit 50", (err, results) => {
+				if (err) throw err;
 
-						console.log("Data received from Db:");
-						console.log(rows);
-					});
-					break;
-				case "department":
-					connection.query("SELECT * FROM department limit 50", (err, rows) => {
-						if (err) throw err;
+				console.log("Data received from Db:");
+				console.table(results);
+			});
+			break;
+		case "department":
+			connection.query("SELECT * FROM department limit 50", (err, results) => {
+				if (err) throw err;
 
-						console.log("Data received from Db:");
-						console.log(rows);
-					});
-					break;
+				console.log("Data received from Db:");
+				console.table(results);
+			});
+			break;
 
-				default:
-				// code block
-			}
-		});
-	});
+		default:
+		// code block
+	}
+	// });
 }
 // init();
 // if response is updateChoice
