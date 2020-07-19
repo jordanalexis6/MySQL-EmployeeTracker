@@ -155,6 +155,7 @@ function employee() {
           function (err) {
             if (err) throw err;
             // console.table();
+            connection.end();
           }
         );
       });
@@ -212,6 +213,7 @@ function role() {
           function (err) {
             if (err) throw err;
             // console.table();
+            connection.end();
           }
         );
       });
@@ -229,6 +231,7 @@ function department() {
       function (err) {
         if (err) throw err;
         // console.table();
+        connection.end();
       }
     );
   });
@@ -264,8 +267,8 @@ function view(response2) {
         console.table(results);
       });
       break;
-
     default:
+      connection.end();
     // code block
   }
   // });
