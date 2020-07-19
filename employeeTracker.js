@@ -48,13 +48,6 @@ const questions2 = [
   },
 ];
 
-const departmentQuestions = [
-  {
-    name: "name",
-    type: "input",
-    message: "What is your department name?",
-  },
-];
 //not MVP.
 // const allQuestions = [employeeQuestions, roleQuestions, departmentQuestions];
 
@@ -221,6 +214,13 @@ function role() {
   });
 }
 function department() {
+  const departmentQuestions = [
+    {
+      name: "name",
+      type: "input",
+      message: "What is your department name?",
+    },
+  ];
   inquirer.prompt(departmentQuestions).then(function (answers) {
     // when finished prompting, insert a new item into the db with that info
     connection.query(
