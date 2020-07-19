@@ -23,6 +23,14 @@ connection.connect(function (err) {
   init();
 });
 
+function lookUp(query) {
+  return new Promise((resolve, reject) => {
+    connection.query(query, function (error, results) {
+      resolve(results);
+    });
+  });
+}
+
 const questions = [
   {
     type: "list",
@@ -40,45 +48,6 @@ const questions2 = [
   },
 ];
 
-const employeeQuestions = [
-  {
-    name: "first_name",
-    type: "input",
-    message: "What is your first name?",
-  },
-  {
-    name: "last_name",
-    type: "input",
-    message: "What is your last name?",
-  },
-  {
-    name: "role_id",
-    type: "input",
-    message: "What is your role id?",
-  },
-  {
-    name: "manager_id",
-    type: "input",
-    message: "What is your manager id?",
-  },
-];
-const roleQuestions = [
-  {
-    name: "title",
-    type: "input",
-    message: "What is your role title?",
-  },
-  {
-    name: "salary",
-    type: "input",
-    message: "What is your current salary",
-  },
-  {
-    name: "department_id",
-    type: "input",
-    message: "What is your department ID?",
-  },
-];
 const departmentQuestions = [
   {
     name: "name",
@@ -133,42 +102,120 @@ function init() {
 }
 // addChoice functions questions based on what they want to add
 function employee() {
-  //check if dept exists
-  //check if role exists
-  inquirer.prompt(employeeQuestions).then(function (answers) {
-    // when finished prompting, insert a new item into the db with that info
-    console.log(answers);
-    connection.query(
-      "INSERT INTO employee SET ?",
-      {
-        first_name: answers.first_name,
-        last_name: answers.last_name,
-        role_id: answers.role_id,
-        manager_id: answers.manager_id,
-      },
-      function (err) {
-        if (err) throw err;
-        // console.table();
-      }
-    );
+  lookUp("select id, title from role").then((results) => {
+    const roles = results.map((role) => {
+      return role.id + ". " + role.title;
+    });
+
+    lookUp("select id, first_name, last_name from employee").then((results) => {
+      const employees = results.map((employee) => {
+        return (
+          employee.id + ". " + employee.first_name + " " + employee.last_name
+        );
+      });
+
+      const employeeQuestions = [
+        {
+          name: "first_name",
+          type: "input",
+          message: "What is your first name?",
+        },
+        {
+          name: "last_name",
+          type: "input",
+          message: "What is your last name?",
+        },
+        {
+          name: "role_id",
+          type: "list",
+          message: "What is your role id?",
+          choices: roles,
+        },
+        {
+          name: "manager_id",
+          type: "list",
+          message: "What is your manager id?",
+          choices: employees,
+        },
+      ];
+      //check if dept exists
+      //check if role exists
+      inquirer.prompt(employeeQuestions).then(function (answers) {
+        // when finished prompting, insert a new item into the db with that info
+        const role_id = answers.role_id.split(". ");
+        const manager_id = answers.manager_id.split(". ");
+        connection.query(
+          "INSERT INTO employee SET ?",
+          {
+            first_name: answers.first_name,
+            last_name: answers.last_name,
+            role_id: role_id[0],
+            manager_id: manager_id[0],
+          },
+          function (err) {
+            if (err) throw err;
+            // console.table();
+          }
+        );
+      });
+    });
   });
 }
 function role() {
-  inquirer.prompt(roleQuestions).then(function (answers) {
-    // when finished prompting, insert a new item into the db with that info
+  // lookUp("select id, title from role").then((results) => {
+  //   const roles = results.map((role) => {
+  //     return role.id + ". " + role.title;
+  //   });
 
-    connection.query(
-      "INSERT INTO role SET ?",
-      {
-        title: answers.title,
-        salary: answers.salary,
-        department_name: answers.department_name,
-      },
-      function (err) {
-        if (err) throw err;
-        // console.table();
-      }
-    );
+  lookUp("select id, title from department").then((results) => {
+    const departments = results.map((department) => {
+      return department.id + ". " + department.title;
+    });
+
+    lookUp("select id, salary from role").then((results) => {
+      const salaries = results.map((salary) => {
+        return salary.id + ". " + salary.title;
+      });
+
+      const roleQuestions = [
+        {
+          name: "role_id",
+          type: "input",
+          message: "What is your role title?",
+          // choices: roles,
+        },
+        {
+          name: "salary",
+          type: "list",
+          message: "What is your current salary",
+          choices: salaries,
+        },
+        {
+          name: "department_id",
+          type: "list",
+          message: "What is your department ID?",
+          choices: departments,
+        },
+      ];
+      inquirer.prompt(roleQuestions).then(function (answers) {
+        // when finished prompting, insert a new item into the db with that info
+        // const role_id = answers.role_id.split(". ");
+        const salary = answers.salary.split(". ");
+        const department_id = answers.department_id.split(". ");
+        connection.query(
+          "INSERT INTO role SET ?",
+          {
+            role_id: answer.role_id,
+            salary: salary[0],
+            department_id: department_id[0],
+          },
+          function (err) {
+            if (err) throw err;
+            // console.table();
+          }
+        );
+      });
+    });
   });
 }
 function department() {
@@ -225,15 +272,18 @@ function view(response2) {
 }
 // init();
 // if response is updateChoice
+// lookUp function on employee//pull questions down//
 function update() {
   inquirer.prompt(questions).then((response) => {
     console.log(response);
+    // lookUp map
+    // questions
     inquirer.prompt(updateQuestions).then((response4) => {
       console.log(response4);
       switch (response4.updateChoice) {
         case "employee":
           connection.query(
-            //----------------this is where the current problem is happening: Where id = ?    -------------------------
+            //lookUp
             "UPDATE employee SET first_name = ?, last_name = ? where id = ?",
             ["Lil", "Leipzig", 3],
             (err, result) => {
