@@ -251,6 +251,7 @@ function view(response2) {
 
         console.log("Data received from Db:");
         console.table(results);
+        connection.end();
       });
       break;
     case "role":
@@ -259,6 +260,7 @@ function view(response2) {
 
         console.log("Data received from Db:");
         console.table(results);
+        connection.end();
       });
       break;
     case "department":
@@ -267,10 +269,12 @@ function view(response2) {
 
         console.log("Data received from Db:");
         console.table(results);
+        connection.end();
       });
       break;
-    default:
+    case "EXIT":
       connection.end();
+    default:
     // code block
   }
   // });
