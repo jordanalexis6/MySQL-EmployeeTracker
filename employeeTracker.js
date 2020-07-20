@@ -56,7 +56,7 @@ function init() {
   inquirer.prompt(questions).then((response) => {
     if (response.actionChoice === "UPDATE") {
       //display current employee table
-      console.table(response2.results);
+      console.table(response.results);
       role();
     } else {
       inquirer.prompt(questions2).then((response2) => {
@@ -74,7 +74,6 @@ function init() {
             break;
           case "VIEW":
             if (response2.targetChoice === "employee") {
-              // employee();
               view(response2.targetChoice);
             }
             if (response2.targetChoice === "role") {
@@ -286,7 +285,14 @@ function update() {
   inquirer.prompt(questions).then((response) => {
     console.log(response);
     // lookUp map
-    // questions
+    const updateQuestions = [
+      {
+        type: "list",
+        name: "update",
+        message: "What would you like to update?",
+        choices: ["employee", "role", "department"],
+      },
+    ];
     inquirer.prompt(updateQuestions).then((response4) => {
       console.log(response4);
       switch (response4.updateChoice) {
