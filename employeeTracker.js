@@ -174,7 +174,7 @@ function addRole() {
 
         const roleQuestions = [
           {
-            name: "role_id",
+            name: "title",
             type: "input",
             message: "What is your role title?",
             // choices: roles,
@@ -200,7 +200,7 @@ function addRole() {
           connection.query(
             "INSERT INTO role SET ?",
             {
-              role_id: answers.role_id,
+              title: answers.title,
               salary: salary[0],
               department_id: department_id[0],
             },
