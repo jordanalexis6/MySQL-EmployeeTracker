@@ -26,6 +26,9 @@ connection.connect(function (err) {
 function lookUp(query) {
   return new Promise((resolve, reject) => {
     connection.query(query, function (error, results) {
+      if (error) {
+        reject(error);
+      }
       resolve(results);
     });
   });
@@ -48,9 +51,6 @@ const questions2 = [
   },
 ];
 
-//not MVP.
-// const allQuestions = [employeeQuestions, roleQuestions, departmentQuestions];
-
 // if response is addChoice run through function to add based on what they choose
 function init() {
   inquirer.prompt(questions).then((response) => {
@@ -66,7 +66,7 @@ function init() {
               employee();
             }
             if (response2.targetChoice === "role") {
-              role();
+              addRole();
             }
             if (response2.targetChoice === "department") {
               department();
@@ -155,63 +155,65 @@ function employee() {
     });
   });
 }
-function role() {
+function addRole() {
   // lookUp("select id, title from role").then((results) => {
   //   const roles = results.map((role) => {
   //     return role.id + ". " + role.title;
   //   });
 
-  lookUp("select id, title from department").then((results) => {
-    const departments = results.map((department) => {
-      return department.id + ". " + department.title;
-    });
-
-    lookUp("select id, salary from role").then((results) => {
-      const salaries = results.map((salary) => {
-        return salary.id + ". " + salary.title;
+  lookUp("select id, name from department")
+    .then((results) => {
+      const departments = results.map((department) => {
+        return department.id + ". " + department.name;
       });
 
-      const roleQuestions = [
-        {
-          name: "role_id",
-          type: "input",
-          message: "What is your role title?",
-          // choices: roles,
-        },
-        {
-          name: "salary",
-          type: "list",
-          message: "What is your current salary",
-          choices: salaries,
-        },
-        {
-          name: "department_id",
-          type: "list",
-          message: "What is your department ID?",
-          choices: departments,
-        },
-      ];
-      inquirer.prompt(roleQuestions).then(function (answers) {
-        // when finished prompting, insert a new item into the db with that info
-        // const role_id = answers.role_id.split(". ");
-        const salary = answers.salary.split(". ");
-        const department_id = answers.department_id.split(". ");
-        connection.query(
-          "INSERT INTO role SET ?",
+      lookUp("select id, salary from role").then((results) => {
+        const salaries = results.map((role) => {
+          return role.id + ". " + role.salary;
+        });
+
+        const roleQuestions = [
           {
-            role_id: answer.role_id,
-            salary: salary[0],
-            department_id: department_id[0],
+            name: "role_id",
+            type: "input",
+            message: "What is your role title?",
+            // choices: roles,
           },
-          function (err) {
-            if (err) throw err;
-            // console.table();
-            connection.end();
-          }
-        );
+          {
+            name: "salary",
+            type: "list",
+            message: "What is your current salary",
+            choices: salaries,
+          },
+          {
+            name: "department_id",
+            type: "list",
+            message: "What is your department ID?",
+            choices: departments,
+          },
+        ];
+        inquirer.prompt(roleQuestions).then(function (answers) {
+          // when finished prompting, insert a new item into the db with that info
+          // const role_id = answers.role_id.split(". ");
+          const salary = answers.salary.split(". ");
+          const department_id = answers.department_id.split(". ");
+          connection.query(
+            "INSERT INTO role SET ?",
+            {
+              role_id: answers.role_id,
+              salary: salary[0],
+              department_id: department_id[0],
+            },
+            function (err) {
+              if (err) throw err;
+              // console.table();
+              connection.end();
+            }
+          );
+        });
       });
-    });
-  });
+    })
+    .catch((error) => console.log(error));
 }
 function department() {
   const departmentQuestions = [
