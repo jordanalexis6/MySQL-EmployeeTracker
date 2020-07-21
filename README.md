@@ -18,4 +18,8 @@ How do you deliver this? Here are some guidelines:
 
 - You will need to perform a variety of SQL JOINS to complete this assignment, and it's recommended you review the week's activities if you need a refresher on this.
 
-![Employee Tracker](Assets/employee-tracker.gif)
+video of application in vs code
+https://drive.google.com/file/d/1vJs7CvrGH_CreR6MVfgQVYL_Zt-WpeNu/view
+
+video of application on MYSQL Workbench
+https://drive.google.com/file/d/16LjUU8aq9dHs_INP1FF5QU52bPet5mxj/view

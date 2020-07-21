@@ -39,7 +39,7 @@ const questions = [
     type: "list",
     name: "actionChoice",
     message: "What would you like to do?",
-    choices: ["ADD", "VIEW", "UPDATE"],
+    choices: ["ADD", "VIEW", "UPDATE EMPLOYEE ROLE"],
   },
 ];
 const questions2 = [
@@ -54,10 +54,10 @@ const questions2 = [
 // if response is addChoice run through function to add based on what they choose
 function init() {
   inquirer.prompt(questions).then((response) => {
-    if (response.actionChoice === "UPDATE") {
+    if (response.actionChoice === "UPDATE EMPLOYEE ROLE") {
       //display current employee table
-      console.table(response.results);
-      role();
+      console.table(response2.results);
+      update();
     } else {
       inquirer.prompt(questions2).then((response2) => {
         switch (response.actionChoice) {
@@ -130,8 +130,6 @@ function employee() {
           choices: employees,
         },
       ];
-      //check if dept exists
-      //check if role exists
       inquirer.prompt(employeeQuestions).then(function (answers) {
         // when finished prompting, insert a new item into the db with that info
         const role_id = answers.role_id.split(". ");
@@ -155,11 +153,6 @@ function employee() {
   });
 }
 function addRole() {
-  // lookUp("select id, title from role").then((results) => {
-  //   const roles = results.map((role) => {
-  //     return role.id + ". " + role.title;
-  //   });
-
   lookUp("select id, name from department")
     .then((results) => {
       const departments = results.map((department) => {
@@ -176,7 +169,6 @@ function addRole() {
             name: "title",
             type: "input",
             message: "What is your role title?",
-            // choices: roles,
           },
           {
             name: "salary",
@@ -205,7 +197,6 @@ function addRole() {
             },
             function (err) {
               if (err) throw err;
-              // console.table();
               connection.end();
             }
           );
@@ -278,68 +269,35 @@ function view(response2) {
   }
   // });
 }
-// init();
 // if response is updateChoice
-// lookUp function on employee//pull questions down//
 function update() {
-  inquirer.prompt(questions).then((response) => {
-    console.log(response);
-    // lookUp map
+  lookUp("select id, first_name, last_name from employee").then((results) => {
+    const employees = results.map((employee) => {
+      return (
+        employee.id + ". " + employee.first_name + " " + employee.last_name
+      );
+    });
     const updateQuestions = [
       {
         type: "list",
         name: "update",
-        message: "What would you like to update?",
-        choices: ["employee", "role", "department"],
+        message: "Which employee role would you like to update?",
+        choices: employees,
       },
     ];
-    inquirer.prompt(updateQuestions).then((response4) => {
-      console.log(response4);
-      switch (response4.updateChoice) {
-        case "employee":
-          connection.query(
-            //lookUp
-            "UPDATE employee SET first_name = ?, last_name = ? where id = ?",
-            ["Lil", "Leipzig", 3],
-            (err, result) => {
-              if (err) throw err;
+    inquirer.prompt(updateQuestions).then((response) => {
+      const employee = answers.manager_id.split(". ");
+      console.log(response);
 
-              console.log(`Changed ${result.changedRows} row(s)`);
-            }
-          );
-          break;
-        case "role":
-          connection.query(
-            "UPDATE role SET title = ?, salary = ? where id = ?",
-            ["Bobby", "Leipzig", 3],
-            (err, result) => {
-              if (err) throw err;
-
-              console.log(`Changed ${result.changedRows} row(s)`);
-            }
-          );
-          break;
-        case "department":
-          connection.query(
-            "UPDATE department SET name = ? Where id = ?",
-            ["lil", "Leipzig", 3],
-            (err, result) => {
-              if (err) throw err;
-
-              console.log(`Changed ${result.changedRows} row(s)`);
-            }
-          );
-          break;
-        default:
-        // code block
-      }
+      connection.query(
+        "UPDATE role SET title = ?, salary = ? where id = ?",
+        employee[0],
+        // ["Bobby", "Leipzig", 3],
+        (err, result) => {
+          if (err) throw err;
+          console.log(`Changed ${result.changedRows} row(s)`);
+        }
+      );
     });
   });
 }
-// res.send(result.toString());
-
-// Start our server so that it can begin listening to client requests.
-// app.listen(PORT, function () {
-// 	// Log (server-side) when our server has started
-// 	console.log("Server listening on: http://localhost:" + PORT);
-// });
