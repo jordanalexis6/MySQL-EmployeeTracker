@@ -285,33 +285,35 @@ function view(response2) {
 }
 // if response is updateChoice
 function update() {
-	lookUp("select id, first_name, last_name from employee")
+	lookUp("select id, title, salary, department_id from role")
 		.then((results) => {
-			const employees = results.map((employee) => {
-				return (
-					employee.id + ". " + employee.first_name + " " + employee.last_name
-				);
+			const role = results.map((role) => {
+				// [{ name: "antonio", value: role}]
+				return {
+					name: `${role.id}. ${role.title} ${role.salary} ${role.department_id}`,
+					value: role,
+				};
 			});
 			const updateQuestions = [
 				{
 					type: "list",
 					name: "update",
 					message: "Which employee role would you like to update?",
-					choices: employees,
+					choices: role,
 				},
 			];
 			inquirer.prompt(updateQuestions).then((answers) => {
-				const employee = answers.update.split(". ");
-				console.log(answers);
+				const role = answers.update;
+				console.log(role);
 
 				connection.query(
-					"UPDATE role SET title = ?, salary = ? where id = ?",
-					employee[0],
-					// ["Bobby", "Leipzig", 3],
-					(err, result) => {
-						if (err) throw err;
-						console.log(`Changed ${result.changedRows} row(s)`);
-					}
+					"UPDATE role SET id = ?, title = ?, salary = ? where department_id = ?",
+					role[0]
+					// 	// ["Bobby", "Leipzig", 3],
+					// 	(err, result) => {
+					// 		if (err) throw err;
+					// 		console.log(`Changed ${result.changedRows} row(s)`);
+					// 	}
 				);
 			});
 		})
