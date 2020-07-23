@@ -290,7 +290,7 @@ function update() {
 			const role = results.map((role) => {
 				// [{ name: "antonio", value: role}]
 				return {
-					name: `${role.id}. ${role.title} ${role.salary} ${role.department_id}`,
+					name: `${role.id} ${role.title} ${role.salary} ${role.department_id}`,
 					value: role,
 				};
 			});
@@ -302,19 +302,46 @@ function update() {
 					choices: role,
 				},
 			];
+			const updateTarget = [
+				{
+					type: "list",
+					name: "update",
+					message: "Which data would you like to update?",
+					choices: ["title", "salary"],
+				},
+			];
+			const updateFill = [
+				{
+					type: "prompt",
+					name: "update",
+					message: "Add replacement data.",
+				},
+			];
 			inquirer.prompt(updateQuestions).then((answers) => {
 				const role = answers.update;
-				console.log(role);
+				console.log("this is logged: ", role);
+				inquirer.prompt(updateTarget).then((updateTargetResponse) => {
+					inquirer.prompt(updateFill).then((updateFillResponse) => {
+						// console.log(updateFillResponse);
+						console.log(updateTargetResponse.update);
+						var setObject = {};
+						if (updateTargetResponse.update === "title") {
+							setObject.title = "mrManager";
+						} else {
+							setObject.salary = 12.54;
+						}
 
-				connection.query(
-					"UPDATE role SET id = ?, title = ?, salary = ? where department_id = ?",
-					role[0]
-					// 	// ["Bobby", "Leipzig", 3],
-					// 	(err, result) => {
-					// 		if (err) throw err;
-					// 		console.log(`Changed ${result.changedRows} row(s)`);
-					// 	}
-				);
+						connection.query(
+							"UPDATE role SET ? WHERE ?",
+							[setObject, role.id],
+							(err, result) => {
+								if (err) throw err;
+								console.log("role.id: ", role.id);
+								console.log(`Changed ${result.changedRows} row(s)`);
+							}
+						);
+					});
+				});
 			});
 		})
 		.catch((error) => console.log(error));
